@@ -7,13 +7,13 @@ import operator
 from operator import sub, add
 import numpy as np
 
-SampleID_List=["410200_2", "410200_2", "423690_1", "423690_2", "406786_2", "459591_1", "459591_2"]
+#SampleID_List=["410200_2", "410200_2", "423690_1", "423690_2", "406786_2", "459591_1", "459591_2"]
 OutputFolder="Output/"
 
-def main():
+def main(SampleID):
 
-    for SampleID in SampleID_List:
-        print SampleID
+    
+    print SampleID
     # Load the image from disk as a numpy ndarray
     original_img = misc.imread('Output/Segmentated_Thinned'+SampleID+'.png')
 
