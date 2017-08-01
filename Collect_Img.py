@@ -5,7 +5,7 @@ from PatchedPIL import Image, ImageFile, BmpImagePlugin, ImagePalette
 from matplotlib import pyplot as plt
 
 def main():
-    locallabel()
+    label()
 
 def label():
     with open ("../Sample_List.txt","r") as OpenSampleList:
@@ -16,7 +16,7 @@ def label():
                 number+=1
                 SampleID = target.group(0)
                 print SampleID
-                URLlink=("http://slides.mskcc.org/slides/huangk@mskcc.org/19;" +target + "/getLabelFileBMP")
+                URLlink=("http://slides.mskcc.org/slides/huangk@mskcc.org/19;" +SampleID + "/getLabelFileBMP")
                 files = cStringIO.StringIO(urllib.urlopen(URLlink).read())
                 img = Image.open(files)
                 w,l = img.size
@@ -24,7 +24,7 @@ def label():
                 length=int(1280.0/float(w)*float(l))
                 print length
                 new_img=img.resize((1280,length))
-                plt.imsave("../Output/" + target + ".bmp",new_img)
+                plt.imsave("../Output/Label/" + SampleID + ".bmp",new_img)
             else:
                 print line, "not found"
     #URLlink = "http://slides.mskcc.org/slides/pengy@mskcc.org/19;p;403769.svs/getLabelFileBMP"
