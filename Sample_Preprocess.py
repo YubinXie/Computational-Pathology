@@ -11,16 +11,15 @@ from skimage.segmentation import clear_border
 from skimage.measure import label, regionprops
 from PIL import Image
 
-InputFolder = 'RawInput/'
 OutputFolder = 'Output/'
 
 ImageList= ["459591"]#, "406786" ,"423690", "410200"]
-kernel = np.ones((5,5),np.uint8)
-kernel_size=str(kernel.shape)
-ReginThreshold=5000
+image="459591"
 
-def main(ImageList):
-  for image in ImageList:
+def main(InputFolder,image,OutputFolder):
+    kernel = np.ones((5,5),np.uint8)
+    kernel_size=str(kernel.shape)
+    ReginThreshold=5000
     print image
     #Input sample and label files
     Sample_Img = cv2.imread(InputFolder + image + ".jpg" , 0)
@@ -91,4 +90,4 @@ def main(ImageList):
 
 
 if __name__ == '__main__':
-  main(ImageList)
+  main(InputFolder,image,OutputFolder)

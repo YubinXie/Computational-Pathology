@@ -1,5 +1,5 @@
 import os
 import subprocess
-import Path_Preprocess
+import Sample_Preprocess
 
-Path_Preprocess.main(["459591"])
+Sample_Preprocess.main("../RawInput/","459591","Output")
