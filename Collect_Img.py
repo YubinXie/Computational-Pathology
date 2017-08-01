@@ -16,8 +16,15 @@ def label():
                 number+=1
                 SampleID = target.group(0)
                 print SampleID
+                files=None
                 URLlink=("http://slides.mskcc.org/slides/huangk@mskcc.org/19;" +SampleID + "/getLabelFileBMP")
-                files = cStringIO.StringIO(urllib.urlopen(URLlink).read())
+                try:
+                    files = cStringIO.StringIO(urllib.urlopen(URLlink).read())
+                except:
+                    pass
+                if files == None:
+                    print SampleID
+                    continue
                 img = Image.open(files)
                 w,l = img.size
                 print w,l
