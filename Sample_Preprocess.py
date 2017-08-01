@@ -11,10 +11,10 @@ from skimage.segmentation import clear_border
 from skimage.measure import label, regionprops
 from PIL import Image
 
-OutputFolder = 'Output/'
+#OutputFolder = 'Output/'
 
-ImageList= ["459591"]#, "406786" ,"423690", "410200"]
-image="459591"
+#ImageList= ["459591"]#, "406786" ,"423690", "410200"]
+#image="459591"
 
 def main(InputFolder,image,OutputFolder):
     kernel = np.ones((5,5),np.uint8)
@@ -23,9 +23,9 @@ def main(InputFolder,image,OutputFolder):
     print image
     #Input sample and label files
     Sample_Img = cv2.imread(InputFolder + image + ".jpg" , 0)
-    Lable_Img = cv2.imread(InputFolder + image + ".svs_labels.bmp" , 0)
+    #Lable_Img = cv2.imread(InputFolder + image + ".svs_labels.bmp" , 0)
     #Org_Lable_Img= img_as_ubyte(Image.open(InputFolder + image + ".svs_labels.bmp"))
-    #Org_Sample_Img = img_as_ubyte(Image.open(InputFolder + image + ".jpg"))
+    Org_Sample_Img = img_as_ubyte(Image.open(InputFolder + image + ".jpg"))
 
     ## Sample thinning
     # Otsu's thresholding after Gaussian filtering
@@ -38,10 +38,10 @@ def main(InputFolder,image,OutputFolder):
     Sample_Thinned = thin(Sample_Closing_Inverted_Binary)
 
     ##Lale Process
-    Label_Gray = rgb2gray(Lable_Img)
-    Lable_Gray_Inverted = invert(Label_Gray)
-    ret10,Lable_thresholding = cv2.threshold(Lable_Gray_Inverted,10,255,cv2.THRESH_BINARY) #Important
-    Lable_thresholding_Binary=np.where(Lable_thresholding > np.mean(Lable_thresholding),1,0)
+    #Label_Gray = rgb2gray(Lable_Img)
+    #Lable_Gray_Inverted = invert(Label_Gray)
+    #ret10,Lable_thresholding = cv2.threshold(Lable_Gray_Inverted,10,255,cv2.THRESH_BINARY) #Important
+    #Lable_thresholding_Binary=np.where(Lable_thresholding > np.mean(Lable_thresholding),1,0)
 
     #BoundingBox(ReginThreshold):
     thresh = threshold_otsu(Sample_Closing_Inverted_Binary)
@@ -63,7 +63,7 @@ def main(InputFolder,image,OutputFolder):
             Box_Sample = Sample_Thinned[minr:maxr, minc:maxc]
             #Box_Label = Lable_thresholding_Binary[minr:maxr, minc:maxc]
             #Box_Mixed= cv2.bitwise_or(img_as_ubyte(Box_Sample), img_as_ubyte(Box_Label))
-            width, length, height= Box_Label_OrgImg.shape
+            width, length, height= Box_Sample_OrgImg.shape
 
             #Mix the sample and label file
             #Box_OrgMixed=np.zeros(shape=(width, length, height))

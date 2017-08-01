@@ -1,6 +1,8 @@
 import urllib, cStringIO
 import re
-from PIL import Image
+import PatchedPIL
+from PatchedPIL import Image, ImageFile, BmpImagePlugin, ImagePalette
+from matplotlib import pyplot as plt
 
 def main():
     locallabel()
@@ -9,17 +11,23 @@ def label():
     URLlink = "http://slides.mskcc.org/slides/pengy@mskcc.org/19;p;403769.svs/getLabelFileBMP"
     files = cStringIO.StringIO(urllib.urlopen(URLlink).read())
     img = Image.open(files)
-    #w,l = img.size
+    w,l = img.size
     print w,l
-    #new_imh=img.resize(1280,)
+    length=int(1280.0/float(w)*float(l))
+    print length
+    new_img=img.resize((1280,length))
+    plt.imsave("../Output/test.bmp",new_img)
 
 def locallabel():
 
-    files = "RawInput/403769.svs_labels_pengy@mskcc.org.BMP"
+    files = "../RawInput/403769.svs_labels_pengy@mskcc.org.bmp"
     img = Image.open(files)
-    #w,l = img.size
-    #print w,l
-    #new_imh=img.resize(1280,)
+    w,l = img.size
+    print w,l
+    length=int(1280.0/float(w)*float(l))
+    print length
+    new_img=img.resize((1280,537))
+    plt.imsave("../Output/test.bmp",new_img)
 
 
 
