@@ -24,8 +24,8 @@ def main(InputFolder,image,OutputFolder):
     #Input sample and label files
     Sample_Img = cv2.imread(InputFolder + image + ".jpg" , 0)
     Lable_Img = cv2.imread(InputFolder + image + ".svs_labels.bmp" , 0)
-    Org_Lable_Img= img_as_ubyte(Image.open(InputFolder + image + ".svs_labels.bmp"))
-    Org_Sample_Img = img_as_ubyte(Image.open(InputFolder + image + ".jpg"))
+    #Org_Lable_Img= img_as_ubyte(Image.open(InputFolder + image + ".svs_labels.bmp"))
+    #Org_Sample_Img = img_as_ubyte(Image.open(InputFolder + image + ".jpg"))
 
     ## Sample thinning
     # Otsu's thresholding after Gaussian filtering
@@ -59,31 +59,31 @@ def main(InputFolder,image,OutputFolder):
         # draw rectangle around segmented coins
             minr, minc, maxr, maxc = region.bbox
             Box_Sample_OrgImg = Org_Sample_Img[minr:maxr, minc:maxc]
-            Box_Label_OrgImg = Org_Lable_Img[minr:maxr, minc:maxc]
+            #Box_Label_OrgImg = Org_Lable_Img[minr:maxr, minc:maxc]
             Box_Sample = Sample_Thinned[minr:maxr, minc:maxc]
-            Box_Label = Lable_thresholding_Binary[minr:maxr, minc:maxc]
-            Box_Mixed= cv2.bitwise_or(img_as_ubyte(Box_Sample), img_as_ubyte(Box_Label))
+            #Box_Label = Lable_thresholding_Binary[minr:maxr, minc:maxc]
+            #Box_Mixed= cv2.bitwise_or(img_as_ubyte(Box_Sample), img_as_ubyte(Box_Label))
             width, length, height= Box_Label_OrgImg.shape
 
             #Mix the sample and label file
-            Box_OrgMixed=np.zeros(shape=(width, length, height))
+            #Box_OrgMixed=np.zeros(shape=(width, length, height))
             Sample_Mixed=np.zeros(shape=(width, length, height))
             for l in range(length):
                 for w in range(width):
-                    if Box_Label_OrgImg[w,l,0]>=255 & Box_Label_OrgImg[w,l,1]>=255 & Box_Label_OrgImg[w,l,2]>=255:
-                        Box_OrgMixed[w,l]=(Box_Sample_OrgImg[w,l])
-                    else:
-                        Box_OrgMixed[w,l]=(Box_Label_OrgImg[w,l])
+                    #if Box_Label_OrgImg[w,l,0]>=255 & Box_Label_OrgImg[w,l,1]>=255 & Box_Label_OrgImg[w,l,2]>=255:
+                        #Box_OrgMixed[w,l]=(Box_Sample_OrgImg[w,l])
+                    #else:
+                        #Box_OrgMixed[w,l]=(Box_Label_OrgImg[w,l])
                     if Box_Sample[w,l]==0:
                             Sample_Mixed[w,l]=(Box_Sample_OrgImg[w,l])
                     else:
                         Sample_Mixed[w,l]=(0,0,0)
             #Reformat the image
-            Box_OrgMixed=Box_OrgMixed.astype(np.uint8)
+            #Box_OrgMixed=Box_OrgMixed.astype(np.uint8)
             Sample_Mixed=Sample_Mixed.astype(np.uint8)
             #plt.imsave(OutputFolder+"Segmentated_Thinned"+image+"_"+str(number) +".png",Box_Sample,cmap=plt.cm.gray)
             #plt.imsave(OutputFolder+"Segmentated_Thinned"+image+"_"+str(number) +"_Label.png",Box_Label,cmap=plt.cm.gray)
-            plt.imsave(OutputFolder+"Segmentated_Mixed_Thinned"+image+"_"+str(number) +".png",Box_Mixed,cmap=plt.cm.gray)
+            plt.imsave(OutputFolder+"Segmentated_Mixed_Thinned"+image+"_"+str(number) +".png",Sample_Mixed,cmap=plt.cm.gray)
             number+=1
             #print 1
 
