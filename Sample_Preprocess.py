@@ -53,6 +53,8 @@ def main(InputFolder,image,OutputFolder):
     label_image = label(cleared)
     image_label_overlay = label2rgb(label_image, image=Sample_Closing_Inverted_Binary)
     number=0
+    #fig, ax = plt.subplots(figsize=(10, 6))
+    #ax.imshow(image_label_overlay,cmap=plt.cm.gray)
     #plt.imsave(OutputFolder+"Test_"+image+"_"+str(number) +".png",Sample_Closing,cmap=plt.cm.gray)
     for region in regionprops(label_image):
         if region.area >= ReginThreshold:  #600
@@ -64,7 +66,9 @@ def main(InputFolder,image,OutputFolder):
             #Box_Label = Lable_thresholding_Binary[minr:maxr, minc:maxc]
             #Box_Mixed= cv2.bitwise_or(img_as_ubyte(Box_Sample), img_as_ubyte(Box_Label))
             width, length, height= Box_Sample_OrgImg.shape
-
+            #rect = mpatches.Rectangle((minc, minr), maxc - minc, maxr - minr,
+                                 #fill=False, edgecolor='red', linewidth=1)
+            #ax.add_patch(rect)
             #Mix the sample and label file
             #Box_OrgMixed=np.zeros(shape=(width, length, height))
             Sample_Mixed=np.zeros(shape=(width, length, height))
@@ -86,7 +90,10 @@ def main(InputFolder,image,OutputFolder):
             plt.imsave(OutputFolder+"Segmentated_Mixed_Thinned"+image+"_"+str(number) +".png",Sample_Mixed,cmap=plt.cm.gray)
             number+=1
             #print 1
-
+    #ax.set_axis_off()
+    #plt.tight_layout()
+    #plt.show()
+    #plt.savefig(OutputFolder + "BoundingBox_" + image+ "_RegionThreshold_" +str(ReginThreshold),dpi=300)
 
 
 if __name__ == '__main__':
