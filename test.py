@@ -1,8 +1,10 @@
 import urllib, cStringIO
 
-URLlink="www.apple.com"
+img=None
+URLlink="http://slides.mskcc.org/slides/mirsadrl@mskcc.org/19;l;432372/getLabelFileBMP"
 try:
-    files = cStringIO.StringIO(urllib.urlopen(URLlink).read())
+    
+    img = Image.open(cStringIO.StringIO(urllib.urlopen(URLlink).read()))
 except:
     pass
-print 1
+print img

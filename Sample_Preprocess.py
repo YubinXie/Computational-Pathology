@@ -55,7 +55,7 @@ def main(InputFolder,image,OutputFolder):
     number=0
     #fig, ax = plt.subplots(figsize=(10, 6))
     #ax.imshow(image_label_overlay,cmap=plt.cm.gray)
-    #plt.imsave(OutputFolder+"Test_"+image+"_"+str(number) +".png",Sample_Closing,cmap=plt.cm.gray)
+    plt.imsave(OutputFolder+"Test_"+image+"_"+str(number) +".png",Sample_Closing,cmap=plt.cm.gray)
     for region in regionprops(label_image):
         if region.area >= ReginThreshold:  #600
         # draw rectangle around segmented coins
@@ -89,7 +89,7 @@ def main(InputFolder,image,OutputFolder):
             #plt.imsave(OutputFolder+"Segmentated_Thinned"+image+"_"+str(number) +"_Label.png",Box_Label,cmap=plt.cm.gray)
             plt.imsave(OutputFolder+"Segmentated_Mixed_Thinned"+image+"_"+str(number) +".png",Sample_Mixed,cmap=plt.cm.gray)
             number+=1
-            #print 1
+            print 1
     #ax.set_axis_off()
     #plt.tight_layout()
     #plt.show()
