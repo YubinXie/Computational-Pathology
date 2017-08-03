@@ -8,7 +8,7 @@ def main():
     label()
 
 def label():
-    with open ("../Sample_List.txt","r") as OpenSampleList:
+    with open ("Sample_List.txt","r") as OpenSampleList:
         number = 0
         for line in OpenSampleList:
             target = re.search('k;(\d+).svs',line) #l;
@@ -30,7 +30,10 @@ def label():
                 length=int(1280.0/float(w)*float(l))
                 print length
                 new_img=img.resize((1280,length))
+
+                break
                 plt.imsave("../Output/Label/" + SampleID + ".bmp",new_img)
+
             else:
                 print line, "not found"
     #URLlink = "http://slides.mskcc.org/slides/pengy@mskcc.org/19;p;403769.svs/getLabelFileBMP"
