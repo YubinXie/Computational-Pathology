@@ -26,14 +26,14 @@ def label():
                     print SampleID, "no label"
                     continue
                 w,l = img.size
-                print w,l
+                #print img[1,1]
                 length=int(1280.0/float(w)*float(l))
                 print length
                 new_img=img.resize((1280,length))
+                new_img.save("" + SampleID + ".bmp")
 
+                #plt.imsave("../Output/Label/" + SampleID + ".bmp",new_img)
                 break
-                plt.imsave("../Output/Label/" + SampleID + ".bmp",new_img)
-
             else:
                 print line, "not found"
     #URLlink = "http://slides.mskcc.org/slides/pengy@mskcc.org/19;p;403769.svs/getLabelFileBMP"
