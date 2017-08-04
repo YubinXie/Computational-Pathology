@@ -11,13 +11,13 @@ def label():
     with open ("Sample_List.txt","r") as OpenSampleList:
         number = 0
         for line in OpenSampleList:
-            target = re.search('k;(\d+).svs',line) #l;
+            target = re.search('l;(\d+).svs',line) #l;k;
             if(target):
                 number+=1
                 SampleID = target.group(0)
                 print SampleID
                 img=None
-                URLlink=("http://slides.mskcc.org/slides/huangk@mskcc.org/19;" +SampleID + "/getLabelFileBMP") #
+                URLlink=("http://slides.mskcc.org/slides/mirsadrl@mskcc.org/19;" +SampleID + "/getLabelFileBMP") #mirsadrl huangk
                 try:
                     img = Image.open(cStringIO.StringIO(urllib.urlopen(URLlink).read()))
                 except:
@@ -30,10 +30,7 @@ def label():
                 length=int(1280.0/float(w)*float(l))
                 print length
                 new_img=img.resize((1280,length))
-                new_img.save("" + SampleID + ".bmp")
-
-                #plt.imsave("../Output/Label/" + SampleID + ".bmp",new_img)
-                break
+                new_img.save("Label/" + SampleID + ".bmp")
             else:
                 print line, "not found"
     #URLlink = "http://slides.mskcc.org/slides/pengy@mskcc.org/19;p;403769.svs/getLabelFileBMP"

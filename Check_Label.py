@@ -1,31 +1,35 @@
 from scipy import misc
 import sys
+import PatchedPIL
+from PatchedPIL import Image, ImageFile, BmpImagePlugin, ImagePalette
 
 
-
-
-def main():
+InputFolder = "Label/"
+FileName= "l;432923.svs.bmp"
+def main(InputFolder,FileName):
     Color ={}
     original_img=[]
-    FileName= "k;427076.svs.bmp"
     try:
-        original_img = misc.imread(FileName)
+        original_img = Image.open(InputFolder+FileName)
     except:
-    	print "no such file", FileName
     	pass
     if original_img==[]:
     	sys.exit("no such file")
-    w,l,h = original_img.shape
-    print w,l,h
-    print original_img[1,1,:]
+    img=original_img.load()
+    w,l = original_img.size
+    print w,l
     for i in range(w):
         for j in range(l):
-            if original_img[i,j,0] != 255 or original_img[i,j,1] != 255 or original_img[i,j,2] != 255:
-                if str(original_img[i,j,:]) not in Color:
-                    Color[str(original_img[i,j,:])]=1
-    print  line.strip("\n"), Color
+            if (img[i,j]) != 0:
+                print i,j
+            if str(img[i,j]) not in Color:
+                Color[str(img[i,j])]=1
+            if str(img[i,j]) in Color:
+                Color[str(img[i,j])]+=1
+
+    print  FileName, Color
 
 
 
 if __name__ == '__main__':
-  main()
+  main(InputFolder,FileName)
