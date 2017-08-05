@@ -87,7 +87,7 @@ def main(InputFolder,image,OutputFolder):
             Sample_Mixed=Sample_Mixed.astype(np.uint8)
             #plt.imsave(OutputFolder+"Segmentated_Thinned"+image+"_"+str(number) +".png",Box_Sample,cmap=plt.cm.gray)
             #plt.imsave(OutputFolder+"Segmentated_Thinned"+image+"_"+str(number) +"_Label.png",Box_Label,cmap=plt.cm.gray)
-            plt.imsave(OutputFolder+"Segmentated_Mixed_Thinned"+image+"_"+str(number) +".png",Sample_Mixed,cmap=plt.cm.gray)
+            #plt.imsave(OutputFolder+"Segmentated_Mixed_Thinned"+image+"_"+str(number) +".png",Sample_Mixed,cmap=plt.cm.gray)
             number+=1
             print 1
     #ax.set_axis_off()
