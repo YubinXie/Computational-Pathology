@@ -23,7 +23,7 @@ label_image = label(cleared)
 image_label_overlay = label2rgb(label_image, image=image)
 
 fig, ax = plt.subplots(figsize=(10, 6))
-ax.imshow(label_image)
+ax.imshow(image_label_overlay)
 
 for region in regionprops(label_image):
     # take regions with large enough areas

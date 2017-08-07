@@ -5,10 +5,26 @@ import re
 print os.getcwd()
 import Check_Label
 import Collect_Img
+import Overlay
 
 def main():
     #Collect_Img.label()
-    CheckLabel()
+    #CheckLabel()
+    #Preprocess()
+    Overlay()
+
+
+def Overlay():
+    with open ("Sample_List.txt") as OpenSampleList:
+        for line in OpenSampleList:
+            if "k" in line:
+                imagemarker = "k;"
+            if "j" in line:
+                imagemarker = "j;"
+            target = re.search('(\d+)',line)
+            if(target):
+                image = target.group(0)
+                Overlay.main("../RawInput/Tissue/","../RawInput/Label/", imagemarker,image, "../RawInput/Overlay/")
 
 def CollectLabel(LabelMark):
     LabelMarkList = ["k","l","p","v"]
@@ -33,19 +49,14 @@ def CheckLabel():
 
 def Preprocess():
     OutputFolder = "RawInput/"
-    with open ("../Sample_List.txt","r") as OpenSampleList:
+    with open ("Sample_List.txt","r") as OpenSampleList:
         number = 0
         for line in OpenSampleList:
             target = re.search('(\d+)',line)
             if(target):
                 number+=1
                 SampleID = target.group(0)
-                if SampleID != "521175":
-                    continue
-                    print SampleID
-                    Sample_Preprocess.main("../RawInput/Tissue/",SampleID,"../RawInput/")
-                else:
-                    print line, "not found"
+                Sample_Preprocess.main("../RawInput/Tissue/",SampleID,"../RawInput/Box")
 
 
 if __name__ == '__main__':

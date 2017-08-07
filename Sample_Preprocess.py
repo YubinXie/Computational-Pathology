@@ -10,11 +10,12 @@ from skimage.filters import threshold_otsu
 from skimage.segmentation import clear_border
 from skimage.measure import label, regionprops
 from PIL import Image
+import scipy
 
-#OutputFolder = 'Output/'
-
+OutputFolder = 'Output/'
+InputFolder = '../RawInput/Tissue/'
 #ImageList= ["459591"]#, "406786" ,"423690", "410200"]
-#image="459591"
+image="459591"
 
 def main(InputFolder,image,OutputFolder):
     kernel = np.ones((5,5),np.uint8)
@@ -29,7 +30,7 @@ def main(InputFolder,image,OutputFolder):
 
     ## Sample thinning
     # Otsu's thresholding after Gaussian filtering
-    blur = cv2.GaussianBlur(Sample_Img,(75,75),0)
+    blur = cv2.GaussianBlur(Sample_Img,(25,25),0)
     ret1,th1 = cv2.threshold(blur,0,255,cv2.THRESH_OTSU)
     Sample_Closing = cv2.morphologyEx(th1, cv2.MORPH_CLOSE, kernel)
     Sample_Closing_Inverted = invert(Sample_Closing)
@@ -53,12 +54,28 @@ def main(InputFolder,image,OutputFolder):
     label_image = label(cleared)
     image_label_overlay = label2rgb(label_image, image=Sample_Closing_Inverted_Binary)
     number=0
-    #fig, ax = plt.subplots(figsize=(10, 6))
-    #ax.imshow(image_label_overlay,cmap=plt.cm.gray)
-    plt.imsave(OutputFolder+"Test_"+image+"_"+str(number) +".png",Sample_Closing,cmap=plt.cm.gray)
+    fig, ax = plt.subplots(figsize=(10, 6))
+    #NewImage=Sample_Closing_Inverted_Binary
+    #w,l=Sample_Closing_Inverted_Binary.shape
+    #for i in range(w):
+#        for j in range(l):
+    #        NewImage[i,j]=0
+
+
+    ax.imshow(image_label_overlay,cmap=plt.cm.gray)
+    #plt.imsave(OutputFolder+"Test_"+image+"_"+str(number) +".png",Sample_Closing,cmap=plt.cm.gray)
     for region in regionprops(label_image):
+        #ax.imshow(region,cmap=plt.cm.gray)
+        #print region
         if region.area >= ReginThreshold:  #600
-        # draw rectangle around segmented coins
+        # dr3aw rectangle around segmented coins
+            #Coords= region.coords
+            #print Coords
+            #for list in range(len(region.coords)):
+            #    NewImage[ region.coords[list][0],region.coords[list][1]]=1
+
+
+            #scipy.misc.imsave(str(number)+'outfile.jpg', NewImage)
             minr, minc, maxr, maxc = region.bbox
             Box_Sample_OrgImg = Org_Sample_Img[minr:maxr, minc:maxc]
             #Box_Label_OrgImg = Org_Lable_Img[minr:maxr, minc:maxc]
@@ -66,9 +83,9 @@ def main(InputFolder,image,OutputFolder):
             #Box_Label = Lable_thresholding_Binary[minr:maxr, minc:maxc]
             #Box_Mixed= cv2.bitwise_or(img_as_ubyte(Box_Sample), img_as_ubyte(Box_Label))
             width, length, height= Box_Sample_OrgImg.shape
-            #rect = mpatches.Rectangle((minc, minr), maxc - minc, maxr - minr,
-                                 #fill=False, edgecolor='red', linewidth=1)
-            #ax.add_patch(rect)
+            rect = mpatches.Rectangle((minc, minr), maxc - minc, maxr - minr,
+                                 fill=False, edgecolor='red', linewidth=1)
+            ax.add_patch(rect)
             #Mix the sample and label file
             #Box_OrgMixed=np.zeros(shape=(width, length, height))
             Sample_Mixed=np.zeros(shape=(width, length, height))
@@ -86,14 +103,13 @@ def main(InputFolder,image,OutputFolder):
             #Box_OrgMixed=Box_OrgMixed.astype(np.uint8)
             Sample_Mixed=Sample_Mixed.astype(np.uint8)
             #plt.imsave(OutputFolder+"Segmentated_Thinned"+image+"_"+str(number) +".png",Box_Sample,cmap=plt.cm.gray)
-            #plt.imsave(OutputFolder+"Segmentated_Thinned"+image+"_"+str(number) +"_Label.png",Box_Label,cmap=plt.cm.gray)
+            ##plt.imsave(OutputFolder+"Segmentated_Thinned"+image+"_"+str(number) +"_Label.png",Box_Label,cmap=plt.cm.gray)
             #plt.imsave(OutputFolder+"Segmentated_Mixed_Thinned"+image+"_"+str(number) +".png",Sample_Mixed,cmap=plt.cm.gray)
             number+=1
-            print 1
-    #ax.set_axis_off()
-    #plt.tight_layout()
+    ax.set_axis_off()
+    plt.tight_layout()
     #plt.show()
-    #plt.savefig(OutputFolder + "BoundingBox_" + image+ "_RegionThreshold_" +str(ReginThreshold),dpi=300)
+    plt.savefig(OutputFolder + "BoundingBox_" + image+ "_RegionThreshold_" +str(ReginThreshold) +"kel25",dpi=300)
 
 
 if __name__ == '__main__':
