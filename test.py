@@ -1,10 +1,8 @@
-import urllib, cStringIO
-
-img=None
-URLlink="http://slides.mskcc.org/slides/mirsadrl@mskcc.org/19;l;432372/getLabelFileBMP"
-try:
-    
-    img = Image.open(cStringIO.StringIO(urllib.urlopen(URLlink).read()))
-except:
-    pass
-print img
+import numpy as np
+a = np.array([[1, 1], [2, 2], [3, 3]])
+print a[0,1]
+b=np.insert(a, [2]*10, 0, axis =1 )
+print b
+print b.shape
+print (1,1)+(1,1)
+print range(2)
