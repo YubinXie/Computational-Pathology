@@ -11,19 +11,21 @@ def main():
     #Collect_Img.label()
     #CheckLabel()
     #Preprocess()
-    Overlay()
+    OverLay()
 
 
-def Overlay():
+def OverLay():
     with open ("Sample_List.txt") as OpenSampleList:
         for line in OpenSampleList:
+            imagemarker = ""
             if "k" in line:
                 imagemarker = "k;"
-            if "j" in line:
-                imagemarker = "j;"
+            if "l" in line:
+                imagemarker = "l;"
             target = re.search('(\d+)',line)
             if(target):
                 image = target.group(0)
+                print image
                 Overlay.main("../RawInput/Tissue/","../RawInput/Label/", imagemarker,image, "../RawInput/Overlay/")
 
 def CollectLabel(LabelMark):
