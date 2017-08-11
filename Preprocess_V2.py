@@ -13,7 +13,7 @@ from skimage.segmentation import clear_border
 from skimage.measure import label, regionprops
 
 
-OutputFolder = '../Output/'
+OutputFolder = '../Output/08112017/'
 InputFolder = '../RawInput/Tissue/'
 
 image="507469"
@@ -40,12 +40,14 @@ def main(InputFolder,image,OutputFolder):
     Sample_Closing_Inverted_Binary_Expanded=np.insert(Sample_Closing_Inverted_Binary_Expanded,[0]*10,0,axis=1)
     Sample_Closing_Inverted_Binary_Expanded=np.insert(Sample_Closing_Inverted_Binary_Expanded,[w-1]*10,0,axis=0)
     Sample_Closing_Inverted_Binary_Expanded=np.insert(Sample_Closing_Inverted_Binary_Expanded,[0]*10,0,axis=0)
+    #print Org_Sample_Img
+    Org_Sample_Img=np.insert(Org_Sample_Img,[l-1]*10,255,axis=1)
+    Org_Sample_Img=np.insert(Org_Sample_Img,[0]*10,255,axis=1)
+    Org_Sample_Img=np.insert(Org_Sample_Img,[w-1]*10,255,axis=0)
+    Org_Sample_Img=np.insert(Org_Sample_Img,[0]*10,255,axis=0)
+    #print Org_Sample_Img
 
-    Org_Sample_Img=np.insert(Org_Sample_Img,[l-1]*10,0,axis=1)
-    Org_Sample_Img=np.insert(Org_Sample_Img,[0]*10,0,axis=1)
-    Org_Sample_Img=np.insert(Org_Sample_Img,[w-1]*10,0,axis=0)
-    Org_Sample_Img=np.insert(Org_Sample_Img,[0]*10,0,axis=0)
-
+    Thinned = thin(Sample_Closing_Inverted_Binary_Expanded)
 
 
     #BoundingBox(ReginThreshold):
@@ -59,10 +61,11 @@ def main(InputFolder,image,OutputFolder):
     number=0
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.imshow(image_label_overlay,cmap=plt.cm.gray)
-    #plt.imsave(OutputFolder+"Test_"+image+"_"+str(number) +".png",Sample_Closing,cmap=plt.cm.gray)
+    plt.imsave(OutputFolder+"Thinned_"+image+"_" +".png",Thinned,cmap=plt.cm.gray)
     for region in regionprops(label_image):
         if region.area >= ReginThreshold:
             NewImage=np.zeros((w+20,l+20))
+            OriImage=np.zeros((w+20,l+20,3))
         # dr3aw rectangle around segmented coins
             Coords= region.coords
             #scipy.misc.imsave(str(number)+'outfile.jpg', NewImage)
@@ -70,10 +73,12 @@ def main(InputFolder,image,OutputFolder):
             Box_Sample_OrgImg = Org_Sample_Img[max(0,minr-10):min(maxr+10,w+19), max(minc-10,0):min(maxc+10,l+19)]
             width, length, height= Box_Sample_OrgImg.shape
             #NewImage=np.zeros((width, length))
-            for list in range(len(region.coords)):
-                NewImage[ region.coords[list][0],region.coords[list][1]] = Sample_Closing_Inverted_Binary_Expanded[ region.coords[list][0],region.coords[list][1]]
 
+            for list in range(len(Coords)):
+                NewImage[Coords[list][0],Coords[list][1]] = Sample_Closing_Inverted_Binary_Expanded[ Coords[list][0],Coords[list][1]]
+                OriImage[Coords[list][0],Coords[list][1]] = Org_Sample_Img[ Coords[list][0],Coords[list][1]]
             Box_Sample = thin(NewImage)
+            BoxOriImage = OriImage[max(0,minr-10):min(maxr+10,w+19), max(minc-10,0):min(maxc+10,l+19)]
             Box_NewImage =NewImage[max(0,minr-10):min(maxr+10,w+19), max(minc-10,0):min(maxc+10,l+19)]
             Box_Sample=Box_Sample[max(0,minr-10):min(maxr+10,w+19), max(minc-10,0):min(maxc+10,l+19)]
             Box_Sample = np.where(Box_Sample>np.mean(Box_Sample),1,0)
@@ -87,14 +92,16 @@ def main(InputFolder,image,OutputFolder):
             for x in range(width):
                 for y in range(length):
                     if Box_Sample[x,y]==0:
-                            Sample_Mixed[x,y]=(Box_Sample_OrgImg[x,y])
+                        Sample_Mixed[x,y]=(Box_Sample_OrgImg[x,y])
                     else:
-                        Sample_Mixed[x,y]=(0,0,0)
+                        BoxOriImage[x,y]=(0,0,0)
             #Reformat the image
             Sample_Mixed=Sample_Mixed.astype(np.uint8)
+            BoxOriImage=BoxOriImage.astype(np.uint8)
             plt.imsave(OutputFolder+"Segmentated_Mixed_Thinned"+image+"_"+str(number) +".png",Sample_Mixed,cmap=plt.cm.gray)
-            plt.imsave(OutputFolder+"Segmentated_Ori_"+image+"_"+str(number) +".png",Box_NewImage,cmap=plt.cm.gray)
+            #plt.imsave(OutputFolder+"Segmentated_Closing_"+image+"_"+str(number) +".png",Box_NewImage,cmap=plt.cm.gray)
             plt.imsave(OutputFolder+"Segmentated_Thinned"+image+"_"+str(number) +".png",Box_Sample,cmap=plt.cm.gray)
+            plt.imsave(OutputFolder+"Segmentated_Ori"+image+"_"+str(number) +".png",BoxOriImage,cmap=plt.cm.gray)
             number+=1
     ax.set_axis_off()
     plt.tight_layout()
