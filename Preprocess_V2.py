@@ -74,6 +74,7 @@ def main(InputFolder,image,OutputFolder):
                 NewImage[ region.coords[list][0],region.coords[list][1]] = Sample_Closing_Inverted_Binary_Expanded[ region.coords[list][0],region.coords[list][1]]
 
             Box_Sample = thin(NewImage)
+            Box_NewImage =NewImage[max(0,minr-10):min(maxr+10,w+19), max(minc-10,0):min(maxc+10,l+19)]
             Box_Sample=Box_Sample[max(0,minr-10):min(maxr+10,w+19), max(minc-10,0):min(maxc+10,l+19)]
             Box_Sample = np.where(Box_Sample>np.mean(Box_Sample),1,0)
             #Box_Sample = Sample_Thinned[max(0,minr-10):min(maxr+10,w), max(minc-10,0):min(maxc,l+10)]
@@ -87,11 +88,12 @@ def main(InputFolder,image,OutputFolder):
                 for y in range(length):
                     if Box_Sample[x,y]==0:
                             Sample_Mixed[x,y]=(Box_Sample_OrgImg[x,y])
-                    #else:
-                        #Sample_Mixed[x,y]=(0,0,0)
+                    else:
+                        Sample_Mixed[x,y]=(0,0,0)
             #Reformat the image
             Sample_Mixed=Sample_Mixed.astype(np.uint8)
             plt.imsave(OutputFolder+"Segmentated_Mixed_Thinned"+image+"_"+str(number) +".png",Sample_Mixed,cmap=plt.cm.gray)
+            plt.imsave(OutputFolder+"Segmentated_Ori_"+image+"_"+str(number) +".png",Box_NewImage,cmap=plt.cm.gray)
             plt.imsave(OutputFolder+"Segmentated_Thinned"+image+"_"+str(number) +".png",Box_Sample,cmap=plt.cm.gray)
             number+=1
     ax.set_axis_off()
