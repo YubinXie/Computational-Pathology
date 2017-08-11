@@ -7,13 +7,13 @@ from matplotlib import pyplot as plt
 SampleInputFolder = "../RawInput/Tissue/"
 LabelInputFolder =  "../RawInput/Label/"
 OutputFolder = "../RawInput/Overlay/"
-image = "507065"
-imagemarker = "l;"
+image = "465063"
+imagemarker = "K;"
 def main(SampleInputFolder,LabelInputFolder, imagemarker,image, OutputFolder):
     try:
         Org_Lable_Img= img_as_ubyte(Image.open(LabelInputFolder + imagemarker + image + ".svs.bmp"))
         Org_Sample_Img = img_as_ubyte(Image.open(SampleInputFolder + image + ".jpg"))
-
+        print Org_Lable_Img.shape, Org_Sample_Img.shape
         Org_Lable_Img = Org_Lable_Img[:,:,0:3]
 
         width, length, height= Org_Sample_Img.shape
