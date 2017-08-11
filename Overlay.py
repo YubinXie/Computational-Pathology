@@ -8,7 +8,7 @@ SampleInputFolder = "../RawInput/Tissue/"
 LabelInputFolder =  "Label/"
 OutputFolder = "../RawInput/Overlay/"
 image = "465063"
-imagemarker = "K;"
+imagemarker = "k;"
 def main(SampleInputFolder,LabelInputFolder, imagemarker,image, OutputFolder):
     try:
         Org_Lable_Img= img_as_ubyte(Image.open(LabelInputFolder + imagemarker + image + ".svs.bmp"))

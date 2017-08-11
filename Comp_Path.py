@@ -6,12 +6,14 @@ print os.getcwd()
 import Check_Label
 import Collect_Img
 import Overlay
+import Preprocess_V2
 
 def main():
     #Collect_Img.label()
     #CheckLabel()
     #Preprocess()
-    OverLay()
+    #OverLay()
+    PreprocessV2()
 
 
 def OverLay():
@@ -48,6 +50,16 @@ def CheckLabel():
             if "k" in line or "l" in line:
                 Check_Label.main("Label/",line+".bmp")
 
+def PreprocessV2():
+    OutputFolder = "RawInput/"
+    with open ("Sample_List.txt","r") as OpenSampleList:
+        number = 0
+        for line in OpenSampleList:
+            target = re.search('(\d+)',line)
+            if(target):
+                number+=1
+                SampleID = target.group(0)
+                Preprocess_V2.main("../RawInput/Tissue/",SampleID,"../Output/08112017/")
 
 def Preprocess():
     OutputFolder = "RawInput/"
