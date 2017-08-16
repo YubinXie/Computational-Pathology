@@ -7,13 +7,17 @@ import Check_Label
 import Collect_Img
 import Overlay
 import Preprocess_V2
+import gc
+import time
+start_time = time.time()
 
 def main():
     #Collect_Img.label()
     #CheckLabel()
     #Preprocess()
-    #OverLay()
-    PreprocessV2()
+    OverLay()
+    #PreprocessV2()
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 
 def OverLay():
@@ -28,7 +32,9 @@ def OverLay():
             if(target):
                 image = target.group(0)
                 print image
-                Overlay.main("../RawInput/Tissue/","../RawInput/Label/", imagemarker,image, "../RawInput/Overlay/")
+                Overlay.main("../RawInput/Tissue/","Label/", imagemarker,image, "../RawInput/Overlay/")
+
+            gc.collect()
 
 def CollectLabel(LabelMark):
     LabelMarkList = ["k","l","p","v"]
@@ -37,6 +43,7 @@ def CollectLabel(LabelMark):
         for line in OpenSampleList:
             if LabelMarkList[LabelMark] in line:
                 Collect_Img.label()
+                gc.collect()
 
 
 

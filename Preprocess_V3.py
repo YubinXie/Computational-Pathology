@@ -15,20 +15,22 @@ from skimage.measure import label, regionprops
 
 OutputFolder = '../Output/Selected_Tissue/'
 SampleInputFolder = '../RawInput/Tissue/'
-LabelInputFolder = '../RawInput/Label/'
+LabelInputFolder = 'Label/'
+OverlayInputFolder = '../RawInput/Overlay'
 LabelMarkers = ""
 image="507469"
 
 def main(SampleInputFolder,LabelInputFolder,LabelMarkers,image,OutputFolder):
+    # Loading
+    print image
+    Sample_Img = cv2.imread(SampleInputFolder + image + ".jpg" , 0)
+    Org_Sample_Img = img_as_ubyte(Image.open(SampleInputFolder + image + ".jpg"))
+    Org_Label_img = Image.open(LabelInputFolder+LabelMarkers+image+".svs.bmp")
+    Lable_Img=Org_Lable_Img.load()
+
     kernel = np.ones((5,5),np.uint8)
     kernel_size=str(kernel.shape)
     ReginThreshold=5000
-    print image
-    #Input sample and label files
-
-    Sample_Img = cv2.imread(SampleInputFolder + image + ".jpg" , 0)
-    Org_Sample_Img = img_as_ubyte(Image.open(SampleInputFolder + image + ".jpg"))
-    Label_img = Image.open(LabelInputFolder+LabelMarkers+image+".jpg")
 
     ## Sample thinning
     # Otsu's thresholding after Gaussian filtering
