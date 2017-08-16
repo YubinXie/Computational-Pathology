@@ -36,7 +36,7 @@ def main(InputFolder,image,OutputFolder):
     Sample_Closing_Inverted = invert(Sample_Closing)
     Sample_Closing_Inverted_Gray = rgb2gray(Sample_Closing_Inverted)
     Sample_Closing_Inverted_Binary=np.where(Sample_Closing_Inverted_Gray>np.mean(Sample_Closing_Inverted_Gray),1,0)
-    Sample_Thinned = thin(Sample_Closing_Inverted_Binary)
+    Sample_Thinned = thin(Sample_Closing_Inverted_Binary,max_iter=10000 )
 
     ##Lale Process
     #Label_Gray = rgb2gray(Lable_Img)

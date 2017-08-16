@@ -53,7 +53,7 @@ def main(SampleInputFolder,OverlayInputFolder,LabelInputFolder,LabelMarkers,imag
     Org_Sample_Img=np.insert(Org_Sample_Img,[0]*10,255,axis=0)
     #print Org_Sample_Img
     print Sample_Closing_Inverted_Binary_Expanded.shape
-    Thinned = thin(Sample_Closing_Inverted_Binary_Expanded)
+    Thinned = thin(Sample_Closing_Inverted_Binary_Expanded, max_iter=10000000)
 
 
     #BoundingBox(ReginThreshold):
@@ -83,7 +83,7 @@ def main(SampleInputFolder,OverlayInputFolder,LabelInputFolder,LabelMarkers,imag
             for list in range(len(Coords)):
                 NewImage[Coords[list][0],Coords[list][1]] = Sample_Closing_Inverted_Binary_Expanded[ Coords[list][0],Coords[list][1]]
                 OriImage[Coords[list][0],Coords[list][1]] = Org_Sample_Img[ Coords[list][0],Coords[list][1]]
-            Box_Sample = thin(NewImage)
+            Box_Sample = thin(NewImage, max_iter=10000)
             BoxOriImage = OriImage[max(0,minr-10):min(maxr+10,w+19), max(minc-10,0):min(maxc+10,l+19)]
             Box_NewImage =NewImage[max(0,minr-10):min(maxr+10,w+19), max(minc-10,0):min(maxc+10,l+19)]
             Box_Sample=Box_Sample[max(0,minr-10):min(maxr+10,w+19), max(minc-10,0):min(maxc+10,l+19)]

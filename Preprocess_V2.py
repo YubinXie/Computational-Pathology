@@ -47,7 +47,7 @@ def main(InputFolder,image,OutputFolder):
     Org_Sample_Img=np.insert(Org_Sample_Img,[0]*10,255,axis=0)
     #print Org_Sample_Img
 
-    Thinned = thin(Sample_Closing_Inverted_Binary_Expanded)
+    Thinned = thin(Sample_Closing_Inverted_Binary_Expanded, max_iter=1000)
 
 
     #BoundingBox(ReginThreshold):
