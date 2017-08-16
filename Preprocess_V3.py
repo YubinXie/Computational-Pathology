@@ -16,17 +16,18 @@ from skimage.measure import label, regionprops
 OutputFolder = '../Output/Selected_Tissue/'
 SampleInputFolder = '../RawInput/Tissue/'
 LabelInputFolder = 'Label/'
-OverlayInputFolder = '../RawInput/Overlay'
-LabelMarkers = ""
-image="507469"
+OverlayInputFolder = '../RawInput/Overlay/'
+LabelMarkers = "l;"
+image="403757"
 
-def main(SampleInputFolder,LabelInputFolder,LabelMarkers,image,OutputFolder):
+def main(SampleInputFolder,OverlayInputFolder,LabelInputFolder,LabelMarkers,image,OutputFolder):
     # Loading
     print image
     Sample_Img = cv2.imread(SampleInputFolder + image + ".jpg" , 0)
+    Org_Overlay_Img = img_as_ubyte(Image.open(OverlayInputFolder + "Overlay_" + image + "_alpha0.4.png"))
     Org_Sample_Img = img_as_ubyte(Image.open(SampleInputFolder + image + ".jpg"))
-    Org_Label_img = Image.open(LabelInputFolder+LabelMarkers+image+".svs.bmp")
-    Lable_Img=Org_Lable_Img.load()
+    Org_Label_Img = Image.open(LabelInputFolder+LabelMarkers+image+".svs.bmp")
+    LabeL_Img=Org_Label_Img.load()
 
     kernel = np.ones((5,5),np.uint8)
     kernel_size=str(kernel.shape)
@@ -51,7 +52,7 @@ def main(SampleInputFolder,LabelInputFolder,LabelMarkers,image,OutputFolder):
     Org_Sample_Img=np.insert(Org_Sample_Img,[w-1]*10,255,axis=0)
     Org_Sample_Img=np.insert(Org_Sample_Img,[0]*10,255,axis=0)
     #print Org_Sample_Img
-
+    print Sample_Closing_Inverted_Binary_Expanded.shape
     Thinned = thin(Sample_Closing_Inverted_Binary_Expanded)
 
 
@@ -65,7 +66,7 @@ def main(SampleInputFolder,LabelInputFolder,LabelMarkers,image,OutputFolder):
     image_label_overlay = label2rgb(label_image, image=Sample_Closing_Inverted_Binary_Expanded)
     number=0
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.imshow(image_label_overlay,cmap=plt.cm.gray)
+    ax.imshow(Org_Overlay_Img,cmap=plt.cm.gray)
     plt.imsave(OutputFolder+"Thinned_"+image+"_" +".png",Thinned,cmap=plt.cm.gray)
     for region in regionprops(label_image):
         if region.area >= ReginThreshold:
@@ -115,4 +116,4 @@ def main(SampleInputFolder,LabelInputFolder,LabelMarkers,image,OutputFolder):
 
 
 if __name__ == '__main__':
-  main(SampleInputFolder,LabelInputFolder,LabelMarkers,image,OutputFolder)
+  main(SampleInputFolder,OverlayInputFolder,LabelInputFolder,LabelMarkers,image,OutputFolder)
