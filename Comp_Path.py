@@ -2,11 +2,13 @@ import os
 import subprocess
 import Sample_Preprocess
 import re
+import sys
 print os.getcwd()
 import Check_Label
 import Collect_Img
 import Overlay
 import Preprocess_V2
+import Preprocess_V3
 import gc
 import time
 start_time = time.time()
@@ -15,8 +17,9 @@ def main():
     #Collect_Img.label()
     #CheckLabel()
     #Preprocess()
-    OverLay()
+    #OverLay()
     #PreprocessV2()
+    PreprocessV3()
     print("--- %s seconds ---" % (time.time() - start_time))
 
 
@@ -67,6 +70,24 @@ def PreprocessV2():
                 number+=1
                 SampleID = target.group(0)
                 Preprocess_V2.main("../RawInput/Tissue/",SampleID,"../Output/08112017/")
+
+def PreprocessV3():
+    OutputFolder = "../Output/Selected_Tissue_Kel105/"
+    OverlayInputFolder = "../RawInput/Overlay/"
+    SampleInputFolder = "../RawInput/SelectedTissue/"
+    LabelInputFolder = "Label/"
+    LabelMarkers = ""
+    with open ("Sample_List.txt","r") as OpenSampleList:
+        number = 0
+        for line in OpenSampleList:
+            if "k" in line:
+                LabelMarkers = "k;"
+            if "l" in line:
+                LabelMarkers = "l;"
+            target = re.search('(\d+)',line)
+            if(target):
+                image = target.group(0)
+            Preprocess_V3.main(SampleInputFolder,OverlayInputFolder,LabelInputFolder,LabelMarkers,image,OutputFolder)
 
 def Preprocess():
     OutputFolder = "RawInput/"
