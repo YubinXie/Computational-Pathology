@@ -2,6 +2,7 @@ from scipy import misc
 import sys
 import PatchedPIL
 from PatchedPIL import Image, ImageFile, BmpImagePlugin, ImagePalette
+import numpy as np
 
 
 InputFolder = "Label/"
@@ -17,11 +18,13 @@ def main(InputFolder,FileName):
     	sys.exit("no such file")
     img=original_img.load()
     w,l = original_img.size
-    print w,l
+    all_zeros = not np.any(img)
+    print all_zeros
+    #print w,l
     for i in range(w):
         for j in range(l):
-            if (img[i,j]) != 0:
-                print i,j
+            #if (img[i,j]) != 0:
+                #print i,j
             if str(img[i,j]) not in Color:
                 Color[str(img[i,j])]=1
             if str(img[i,j]) in Color:
