@@ -72,9 +72,9 @@ def PreprocessV2():
                 Preprocess_V2.main("../RawInput/Tissue/",SampleID,"../Output/08112017/")
 
 def PreprocessV3():
-    OutputFolder = "../Output/Selected_Tissue_Kel105/"
+    OutputFolder = "../Output/Selected_Tissue2/"
     OverlayInputFolder = "../RawInput/Overlay/"
-    SampleInputFolder = "../RawInput/SelectedTissue/"
+    SampleInputFolder = "../RawInput/SelectedTissue_2/"
     LabelInputFolder = "Label/"
     LabelMarkers = ""
     with open ("Sample_List.txt","r") as OpenSampleList:

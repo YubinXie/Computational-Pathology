@@ -133,7 +133,7 @@ def main(SampleID):
 
     # Choose first two point
     source = to_index(SourceList[0][0],SourceList[0][1])
-    target = to_index(SourceList[1][0],SourceList[1][1])
+    target = to_index(SourceList[1][0],15)
 
     # Compute the shortest path between the source and all other points in the image
     _, predecessors = dijkstra(adjacency, directed=False, indices=[source],

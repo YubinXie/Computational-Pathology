@@ -44,7 +44,16 @@ def main(SampleInputFolder,OverlayInputFolder,LabelInputFolder,LabelMarkers,imag
         Sample_Closing_Inverted_Gray = rgb2gray(invert(Sample_Closing))
         Sample_Closing_Inverted_Binary=np.where(Sample_Closing_Inverted_Gray>np.mean(Sample_Closing_Inverted_Gray),1,0)
 
+        Pre_Thinned = thin(Sample_Closing_Inverted_Binary, max_iter=100000)
+
         w,l = Sample_Closing_Inverted_Binary.shape
+        print w,l,Org_Overlay_Img.shape
+        Overlay_Thin=np.zeros(Org_Overlay_Img.shape)
+        for width in range(w):
+            for length in range(l):
+                #print width,length
+                if Pre_Thinned[width,length]==0:
+                    Overlay_Thin[width,length] = Org_Overlay_Img[width,length]
         Sample_Closing_Inverted_Binary_Expanded=np.insert(Sample_Closing_Inverted_Binary,[l-1]*10,0,axis=1)
         Sample_Closing_Inverted_Binary_Expanded=np.insert(Sample_Closing_Inverted_Binary_Expanded,[0]*10,0,axis=1)
         Sample_Closing_Inverted_Binary_Expanded=np.insert(Sample_Closing_Inverted_Binary_Expanded,[w-1]*10,0,axis=0)
@@ -69,13 +78,13 @@ def main(SampleInputFolder,OverlayInputFolder,LabelInputFolder,LabelMarkers,imag
         image_label_overlay = label2rgb(label_image, image=Sample_Closing_Inverted_Binary_Expanded)
         number=0
         fig, ax = plt.subplots(figsize=(10, 6))
-        ax.imshow(Org_Overlay_Img,cmap=plt.cm.gray)
+        Overlay_Thin=Overlay_Thin.astype(np.uint8)
+        ax.imshow(Overlay_Thin,cmap=plt.cm.gray)
         plt.imsave(OutputFolder+"Thinned_"+image+".png",Thinned,cmap=plt.cm.gray)
         for region in regionprops(label_image):
             if region.area >= ReginThreshold:
                 NewImage=np.zeros((w+20,l+20))
                 OriImage=np.zeros((w+20,l+20,3))
-                # dr3aw rectangle around segmented coins
                 Coords= region.coords
                 #scipy.misc.imsave(str(number)+'outfile.jpg', NewImage)
                 minr, minc, maxr, maxc = region.bbox
