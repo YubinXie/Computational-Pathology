@@ -15,8 +15,8 @@ from skimage.measure import label, regionprops
 
 OutputFolder = '../Output/08112017/'
 InputFolder = '../RawInput/Tissue/'
-
-image="507469"
+InputFolder = '../RawInput/'
+image="testingforyubin_720"
 
 def main(InputFolder,image,OutputFolder):
     kernel = np.ones((5,5),np.uint8)
