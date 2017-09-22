@@ -2,7 +2,7 @@ import openslide
 import os
 import matplotlib.pyplot as plt
 
-folder="../Main/"
+folder="../../../data/fuchs/projects/prostate/aeDict/"
 files = [file for file in os.listdir(folder) if "svs" in file]
 print files
 
