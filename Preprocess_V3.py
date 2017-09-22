@@ -12,7 +12,6 @@ from skimage import data,img_as_ubyte
 from skimage.filters import threshold_otsu
 from skimage.segmentation import clear_border
 from skimage.measure import label, regionprops
-import Track_V2
 
 OutputFolder = '../Output/'
 SampleInputFolder = '../RawInput/Tissue/'
