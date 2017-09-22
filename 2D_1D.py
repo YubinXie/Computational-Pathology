@@ -181,7 +181,7 @@ def main(TissueID):
         ##########
 
 
-        plt.figure(1)
+        plt.figure(figsize=(10,8))
         for gleason in range(GleasonNumber):
             print "Gleason Level: " ,GleasonList[gleason]
             for i in range(0,label_width -1):
@@ -244,8 +244,12 @@ def main(TissueID):
                 Title="Gleason Score:"+str(GleasonList[gleason])
             plt.title(Title)
         #plt.savefig(OutputFolder+"TumorDistribution_"+SampleID)
-        plt.tight_layout()
+        #plt.tight_layout()
+        #plt.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=0, hspace=0)
+        TumorSizeList = [round(i,3) for i in TumorSizeList]
+        plt.figtext(.02, .02, "Tumor Number = %d  Tumor Size = %s" % (TumorNumber,TumorSizeList))
         plt.suptitle(TissueID)
+        plt.tight_layout(rect=[0,0.1,1,0.95]) 
         plt.show()
     except Exception, e:
         print e

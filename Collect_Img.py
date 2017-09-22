@@ -26,15 +26,8 @@ def label():
                     print SampleID, "no label"
                     continue
                 w,l = img.size
-                #print img[1,1]
-                if w>l:
-                    length=int(1280.0/float(w)*float(l))
-                    print length
-                    new_img=img.resize((1280,length))
-                if l>w:
-                    length=int(1280.0/float(l)*float(w))
-                    print length
-                    new_img=img.resize((length,1280))
+
+                new_img=img.resize((w/50.0，l/50.0,1280))
                 new_img.save("Label/" + SampleID + ".bmp")
             else:
                 print line, "not found"
