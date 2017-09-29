@@ -11,13 +11,13 @@ def label():
     with open ("Sample_List.txt","r") as OpenSampleList:
         number = 0
         for line in OpenSampleList:
-            target = re.search('l;(\d+).svs',line) #l;k;
+            target = re.search('k;(\d+).svs',line) #l;k;
             if(target):
                 number+=1
                 SampleID = target.group(0)
                 print SampleID
                 img=None
-                URLlink=("http://slides.mskcc.org/slides/mirsadrl@mskcc.org/19;" +SampleID + "/getLabelFileBMP") #mirsadrl huangk
+                URLlink=("http://slides.mskcc.org/slides/huangk@mskcc.org/19;" +SampleID + "/getLabelFileBMP") #mirsadrl huangk
                 try:
                     img = Image.open(cStringIO.StringIO(urllib.urlopen(URLlink).read()))
                 except:
@@ -26,13 +26,11 @@ def label():
                     print SampleID, "no label"
                     continue
                 w,l = img.size
-
-                new_img=img.resize((w/50.0，l/50.0,1280))
-                new_img.save("Label/" + SampleID + ".bmp")
+                new_img=img.resize((int(w/50.0),int(l/50.0)))
+                new_img.save("Label_resize/" + SampleID + ".bmp")
             else:
                 print line, "not found"
     #URLlink = "http://slides.mskcc.org/slides/pengy@mskcc.org/19;p;403769.svs/getLabelFileBMP"
-
 
 def locallabel():
 
