@@ -4,9 +4,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-SampleInputFolder = "../RawInput/Tissue/"
-LabelInputFolder =  "Label/"
-OutputFolder = "../RawInput/Overlay/"
+SampleInputFolder = "../RawInput/Selected_3/"
+LabelInputFolder =  "./Label_resize/"
+OutputFolder = "../RawInput/Overlay_3/"
 image = "465063"
 imagemarker = "k;"
 def main(SampleInputFolder,LabelInputFolder, imagemarker,image, OutputFolder):
@@ -14,7 +14,7 @@ def main(SampleInputFolder,LabelInputFolder, imagemarker,image, OutputFolder):
     try:
         Org_Lable_Img= (Image.open(LabelInputFolder + imagemarker + image + ".svs.bmp"))
         Lable_Img=Org_Lable_Img.load()
-        Org_Sample_Img = img_as_ubyte(Image.open(SampleInputFolder + image + ".jpg"))
+        Org_Sample_Img = img_as_ubyte(Image.open(SampleInputFolder + image + ".jpEg"))
         print Org_Lable_Img.size, Org_Sample_Img.shape
             #Org_Lable_Img = Org_Lable_Img[:,:,]
 

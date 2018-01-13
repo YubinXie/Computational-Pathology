@@ -3,6 +3,7 @@ import subprocess
 import Sample_Preprocess
 import re
 import sys
+import numpy as np
 print os.getcwd()
 import Check_Label
 import Collect_Img
@@ -19,7 +20,8 @@ def main():
     #Preprocess()
     #OverLay()
     #PreprocessV2()
-    PreprocessV3()
+    #PreprocessV3()
+    Projection()
     print("--- %s seconds ---" % (time.time() - start_time))
 
 
@@ -35,7 +37,7 @@ def OverLay():
             if(target):
                 image = target.group(0)
                 print image
-                Overlay.main("../RawInput/Tissue/","Label/", imagemarker,image, "../RawInput/Overlay/")
+                Overlay.main("../RawInput/Selected_3/","./Label_resize/", imagemarker,image, "../RawInput/Overlay_3/")
 
             gc.collect()
 
@@ -72,10 +74,10 @@ def PreprocessV2():
                 Preprocess_V2.main("../RawInput/Tissue/",SampleID,"../Output/08112017/")
 
 def PreprocessV3():
-    OutputFolder = "../Output/Selected_Tissue2/"
-    OverlayInputFolder = "../RawInput/Overlay/"
-    SampleInputFolder = "../RawInput/SelectedTissue_2/"
-    LabelInputFolder = "Label/"
+    OutputFolder = "../Selected_output/"
+    OverlayInputFolder = "../RawInput/Overlay_3/"
+    SampleInputFolder = "../RawInput/Selected_3/"
+    LabelInputFolder = "Label_resize/"
     LabelMarkers = ""
     with open ("Sample_List.txt","r") as OpenSampleList:
         number = 0
@@ -99,6 +101,17 @@ def Preprocess():
                 number+=1
                 SampleID = target.group(0)
                 Sample_Preprocess.main("../RawInput/Tissue/",SampleID,"../RawInput/Box")
+
+
+def Projection():
+    WorkingFolder = "../Selected_output/"
+    Allfiles = [file[19:27] for file in os.listdir(WorkingFolder) if "Segmentated_Thinned" in file]
+    #print Allfiles
+    Uniquefile = np.unique([ID[:6] for ID in Allfiles])
+    #print Uniquefile
+    for ID in Uniquefile:
+        IDlist = [file for file in Allfiles if ID in file]
+        print IDlist
 
 
 if __name__ == '__main__':

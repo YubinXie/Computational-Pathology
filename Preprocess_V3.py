@@ -13,20 +13,20 @@ from skimage.filters import threshold_otsu
 from skimage.segmentation import clear_border
 from skimage.measure import label, regionprops
 
-OutputFolder = '../Output/'
-SampleInputFolder = '../RawInput/Tissue/'
-LabelInputFolder = 'Label/'
-OverlayInputFolder = '../RawInput/Overlay/'
+OutputFolder = '../Selected_output/'
+SampleInputFolder = '../RawInput/Selected_3/'
+LabelInputFolder = './Label_resize/'
+OverlayInputFolder = '../RawInput/Overlay_3/'
 LabelMarkers = "l;"
-image = "495400"
+image = "414191"
 
 def main(SampleInputFolder,OverlayInputFolder,LabelInputFolder,LabelMarkers,image,OutputFolder):
     try:
         # Loading
         print "Processing "+ image
-        Sample_Img = cv2.imread(SampleInputFolder + image + ".jpg" , 0)
+        Sample_Img = cv2.imread(SampleInputFolder + image + ".jpeg" , 0)
         Org_Overlay_Img = img_as_ubyte(Image.open(OverlayInputFolder + "Overlay_" + image + "_alpha0.4.png"))
-        Org_Sample_Img = img_as_ubyte(Image.open(SampleInputFolder + image + ".jpg"))
+        Org_Sample_Img = img_as_ubyte(Image.open(SampleInputFolder + image + ".jpeg"))
         Org_Label_Img = Image.open(LabelInputFolder+LabelMarkers+image+".svs.bmp")
         #LabeL_Img=Org_Label_Img.load()
 
@@ -38,8 +38,14 @@ def main(SampleInputFolder,OverlayInputFolder,LabelInputFolder,LabelMarkers,imag
         ## Sample thinning
         # Otsu's thresholding after Gaussian filtering
         blur = cv2.GaussianBlur(Sample_Img,GaussianValue,0)
+        #plt.imsave(OutputFolder+"blur_"+image+".png",blur,cmap=plt.cm.gray)
+
         ret1,th1 = cv2.threshold(blur,0,255,cv2.THRESH_OTSU)
+        #plt.imsave(OutputFolder+"OTSU_"+image+".png",th1,cmap=plt.cm.gray)
+
         Sample_Closing = cv2.morphologyEx(th1, cv2.MORPH_CLOSE, kernel)
+        #plt.imsave(OutputFolder+"closing_"+image+".png",Sample_Closing,cmap=plt.cm.gray)
+
         Sample_Closing_Inverted_Gray = rgb2gray(invert(Sample_Closing))
         Sample_Closing_Inverted_Binary=np.where(Sample_Closing_Inverted_Gray>np.mean(Sample_Closing_Inverted_Gray),1,0)
 
@@ -85,6 +91,7 @@ def main(SampleInputFolder,OverlayInputFolder,LabelInputFolder,LabelMarkers,imag
         plt.imsave(OutputFolder+"Thinned_"+image+".png",Thinned,cmap=plt.cm.gray)
         for region in regionprops(label_image):
             if region.area >= ReginThreshold:
+                print "Region AREA:",region.area
                 NewImage=np.zeros((w+20,l+20))
                 OriImage=np.zeros((w+20,l+20,3))
                 Coords= region.coords
@@ -121,13 +128,13 @@ def main(SampleInputFolder,OverlayInputFolder,LabelInputFolder,LabelMarkers,imag
                 Sample_Mixed=Sample_Mixed.astype(np.uint8)
                 BoxOriImage=BoxOriImage.astype(np.uint8)
                 plt.imsave(OutputFolder+"Segmentated_Mixed_Thinned"+image+"_"+str(number) +".png",Sample_Mixed,cmap=plt.cm.gray)
-                #plt.imsave(OutputFolder+"Segmentated_Closing_"+image+"_"+str(number) +".png",Box_NewImage,cmap=plt.cm.gray)
+                plt.imsave(OutputFolder+"Segmentated_Closing_"+image+"_"+str(number) +".png",Box_NewImage,cmap=plt.cm.gray)
                 plt.imsave(OutputFolder+"Segmentated_Thinned"+image+"_"+str(number) +".png",Box_Sample,cmap=plt.cm.gray)
                 plt.imsave(OutputFolder+"Segmentated_Ori"+image+"_"+str(number) +".png",BoxOriImage,cmap=plt.cm.gray)
                 number+=1
-        ax.set_axis_off()
+        ax.set_axis_off() 
         plt.tight_layout()
-        #plt.show()
+        plt.show()
         plt.savefig(OutputFolder + "BoundingBox_" + image+ str(GaussianValue) +"_RegionThreshold_" +str(ReginThreshold),dpi=300)
     except Exception, e:
         print "Errors when processing "+ image

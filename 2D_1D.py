@@ -7,18 +7,59 @@ from scipy import misc
 from scipy.sparse.dok import dok_matrix
 from scipy.sparse.csgraph import dijkstra
 import operator
+from skimage import data,img_as_ubyte
 from operator import sub, add
 import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image
 import itertools
-InputFolder = "../Output/Selected_Tissue2/"
+InputFolder = "../Selected_output/"
 OutputFolder=""
-TissueID = "495400_0"   #"Segmentated_Thinned423690_2" "path" Segmentated_Thinned495400_1.png Segmentated_Label495400_1.bmp
-def main(TissueID):
-    Color=np.array([[255,255,255],[255,255,0],[0,255,0],[0,0,255],[255,0,50],[0,255,255],[255,0,255]])
+OverlapFolder = "../RawInput/Overlay_3/"
+TissueList = ["447088_0","447088_1"]   #"Segmentated_Thinned423690_2" "path" Segmentated_Thinned495400_1.png Segmentated_Label495400_1.bmp
+import csv,cv2
+global Pl, Index
+
+def main(TissueList,InputFolder,OutputFolder,OverlapFolder):
+    global Plot, SampleNumber, Index
+    SampleNumber = len(TissueList)
+    for Index in range(len(TissueList)):
+        LabelFileName = "Segmentated_Label" + TissueList[Index]
+        SampleID = "Segmentated_Thinned" + TissueList[Index]
+        original_label = Image.open(InputFolder+LabelFileName+'.bmp' )
+        label_img=np.asarray(original_label)
+        GleasonList = np.unique(label_img)
+        all_zeros = not label_img.any()
+        if all_zeros == True:
+            SampleNumber = SampleNumber -1
+    Plot = plt.figure(figsize=(10*SampleNumber,8*(len(GleasonList)+1)),dpi=200)
+    Overlap = Image.open(OverlapFolder +  "Overlay_" + str(TissueList[0][:6]) +"_alpha0.4.png")
+    print Overlap
+    #overlap_img =.astype(np.uint8)
+    #print overlap_img
+    plt.subplot(len(GleasonList)+2,1,1)
+    plt.imshow(Overlap,cmap=plt.cm.gray)
+    
+    for Index in range(SampleNumber):
+        mainpart(TissueList[Index])
+    plt.savefig(str(TissueList[0][:6])+".png")
+
+def mainpart(TissueID):
+    global SampleNumber
+    global Plot
+    global Index
+    SizeDic={}
     LabelFileName = "Segmentated_Label" + TissueID
     SampleID = "Segmentated_Thinned" + TissueID
+    with open ("../RawInput/Selected_3/Output.txt", "r") as openSizeinformaiton:
+        for line in openSizeinformaiton:
+            ElementList = line.strip().split()
+            SizeDic[ElementList[0]]=ElementList[1:]
+    print SizeDic[TissueID[:6]+".svs"]
+    DistanceLimit = 3000/(float(SizeDic[TissueID[:6]+".svs"][0]))/50.0
+    SizeScale = float(SizeDic[TissueID[:6]+".svs"][0])*50
+    Color=np.array([[255,255,255],[255,255,0],[0,255,0],[0,0,255],[255,0,50],[0,255,255],[255,0,255]])
+
     print SampleID
     ColorList = []
     def to_index(y, x):
@@ -36,7 +77,7 @@ def main(TissueID):
         original_img = misc.imread(InputFolder + SampleID+'.png')
         img = original_img[:, :, 0] + original_img[:, :, 1] + original_img[:, :, 2]
         original_label = Image.open(InputFolder+LabelFileName+'.bmp' )
-        #label_img=original_label.load()
+
         label_img=np.asarray(original_label)
         label_width,label_length=original_label.size
         #label_img=np.array(label_img)
@@ -61,10 +102,7 @@ def main(TissueID):
                         plot_new_image[length,width,gleason]= 8
 
 
-        #print
-
-        #print all_zeros
-
+        
         if all_zeros == True:
             raise ValueError("no label")
 
@@ -180,8 +218,7 @@ def main(TissueID):
         #plt.savefig("Path_"+SampleID)
         ##########
 
-
-        plt.figure(figsize=(10,8))
+        
         for gleason in range(GleasonNumber):
             print "Gleason Level: " ,GleasonList[gleason]
             for i in range(0,label_width -1):
@@ -209,12 +246,13 @@ def main(TissueID):
             TumorStartPoint.append(DistanceDic[TumorPoint])
             for i in range(len(Path)):
                 X=sum(DistanceList[:i])
-                Xcoordinate.append(X)
+                Xcoordinate.append(X*SizeScale/1000.0)
                 Ycoordinate.append(Sample[gleason][Path[i]])
                 if Sample[gleason][Path[i]]>=1:
                     NextTumorPoint=Path[i]
                     #print NextTumorPoint
-                    if (DistanceDic[NextTumorPoint]- DistanceDic[TumorPoint])>=50:
+
+                    if (DistanceDic[NextTumorPoint]- DistanceDic[TumorPoint])>=DistanceLimit:
                         TumorNumber+=1
                         TumorEndPoint.append(DistanceDic[TumorPoint])
                         TumorPoint=Path[i]
@@ -224,19 +262,21 @@ def main(TissueID):
             TumorEndPoint.append(DistanceDic[TumorPoint])
             TumorSizeList=map(sub, TumorEndPoint, TumorStartPoint)
             print TumorStartPoint,TumorEndPoint
+            TumorSizeList = [round(i*(float(SizeDic[TissueID[:6]+".svs"][0]))/20.0,3) for i in TumorSizeList]
             print "Tumor Number = ",TumorNumber," Tumor Size = ", TumorSizeList
             AverageXcoordinate=[]
             AverageYcoordinate=[]
             for x in range(len(Xcoordinate)):
                 AverageXcoordinate.append(sum(Xcoordinate[x:x+3])/len(Xcoordinate[x:x+3]))
                 AverageYcoordinate.append(sum(Ycoordinate[x:x+3])/len(Ycoordinate[x:x+3]))
-            plt.subplot(GleasonNumber,2,2*gleason+2)
+            plt.subplot(GleasonNumber+1,2*SampleNumber,2*(gleason+1)*SampleNumber+2+2*(int(Index)))
+            plt.subplots_adjust(left=0.1, bottom=0.1, right=0.8, top=0.9, wspace=0.3, hspace=0.1)
             print np.unique(new_image[:,:,gleason])
-
             plt.imshow(plot_new_image[:,:,gleason])
-            plt.subplot(GleasonNumber,2,2*gleason+1)
+            plt.subplot(GleasonNumber+1,2*SampleNumber,2*SampleNumber*(gleason+1)+1+2*(Index))
             plt.plot(Xcoordinate,Ycoordinate)
-            plt.xlabel('Biopsy Length')
+            plt.subplots_adjust(left=0.1, bottom=0.1, right=0.8, top=0.9, wspace=0.3, hspace=0.1)
+            #plt.xlabel('Biopsy Length (mm)')
             plt.ylabel('Tumor Density')
             if gleason == 0:
                 Title="All Gleason Score"
@@ -245,16 +285,17 @@ def main(TissueID):
             plt.title(Title)
         #plt.savefig(OutputFolder+"TumorDistribution_"+SampleID)
         #plt.tight_layout()
-        #plt.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=0, hspace=0)
-        TumorSizeList = [round(i,3) for i in TumorSizeList]
-        plt.figtext(.02, .02, "Tumor Number = %d  Tumor Size = %s" % (TumorNumber,TumorSizeList))
-        plt.suptitle(TissueID)
-        plt.tight_layout(rect=[0,0.1,1,0.95]) 
-        plt.show()
+       
+        plt.xlabel('Biopsy Length (mm)')
+        TumorSizeList = [round(i*(float(SizeDic[TissueID[:6]+".svs"][0]))/20.0,3) for i in TumorSizeList]
+        plt.figtext(.02, .02*(1+Index), "Tumor Number = %d  Tumor Size = %s mm" % (TumorNumber,TumorSizeList))
+        plt.suptitle( TissueList[Index][:6])
+        plt.tight_layout() 
+
     except Exception, e:
         print e
         pass
 
 
 if __name__ == '__main__':
-  main(TissueID)
+  main(TissueList,InputFolder,OutputFolder,OverlapFolder)
